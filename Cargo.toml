@@ -1,0 +1,27 @@
+[package]
+name = "myway-cli"
+version = "0.1.0"
+authors = ["Gabriel Xavier <dotxavket@gmail.com>"]
+edition = "2021"
+description = "A minimalist project manager CLI to organize your ideas and stacks."
+license = "MIT"
+repository = "https://github.com/G4brielXavier/myway"
+readme = "README.md"
+keywords = ["cli", "workflow", "productivity", "management"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+clap = { version = "4.5.60", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0", features = ["preserve_order"] }
+indexmap = { version = "2.0", features = ["serde"] }
+colored = "2.0"
+tequel-rs = "0.3.2"
+chrono = "0.4"
+regex = "1"
+dirs = "5.0"
+
+
+[[bin]]
+name = "myway"
+path = "src/main.rs"
