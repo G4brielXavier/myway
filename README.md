@@ -33,7 +33,7 @@ Created by **Gabriel Xavier**, My Way was born from the need to organize an "ove
 
 | Command | Action | Key Flags |
 | :--- | :--- | :--- |
-| `create` | Spawns a new project | -- |
+| `add` | Spawns a new project | -- |
 | `way` | Lists all active projects | `--uuid`, `--oneline`, `--complex` |
 | `edit` | Modify name, description or tags | `--uuid` or `--name` |
 | `version` | Manage project releases | `--add`, `--list` |
