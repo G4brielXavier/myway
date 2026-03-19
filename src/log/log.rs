@@ -116,7 +116,6 @@ impl LogF for Log {
         println!();
         println!("{}", credits_ascii.italic());
         println!();
-        println!("{}: {}", "Version".italic(), "v0.1.1".italic());
         println!("{}: {}", "Developed by".italic(), "Gabriel \"dotxav\" Xavier".bold());
     }
 }
