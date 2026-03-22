@@ -4,7 +4,7 @@ use crate::cli::commands::Commands;
 
 #[derive(Parser, Debug)]
 #[command(author = "Gabriel 'dotxav' Xavier")]
-#[command(version = "v0.1.6")]
+#[command(version = "v0.2.1")]
 #[command(about = None)]
 #[command(long_about = None)]
 pub struct Args {

@@ -75,13 +75,11 @@ Planning...
 ## 💻Installation
 
 
-1. Install with Cargo:
+Install with Cargo:
+
 ```
 cargo install myway-cli
 ```
-
-2. Install from **Releases**
-
 
 
 ## 📄 License
