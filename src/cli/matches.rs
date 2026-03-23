@@ -38,18 +38,19 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
                 uuid_project_val = teq_rng.rand_deep_string(3);
             }
 
-            let msg_uuid = format!("uuid_project: {}", uuid_project_val.bold());
-
+            let msg_uuid = format!("uuid_project: {}", uuid_project_val.bold());            
             let proj_name_def: String = format!("my_project_{}", uuid_project_val);
-
+            
             log.hey_mw("Preparing to create project...");
+            log.hey("");
+            log.hey_mw(&format!("UUID Generated with {}", "Tequel".bold()));
             log.hey(&msg_uuid);
             log.hey("");
             
             let mut proj_name = log.quest_mandatory("project_name", &proj_name_def);
 
-            if proj_name.len() > 12 {
-                return Err(MyWayError::StringLengthLimitExceeded("project_name: <=12 limit length".to_string()))
+            if proj_name.len() > 20 {
+                return Err(MyWayError::StringLengthLimitExceeded("project_name: <=20 limit length".to_string()))
             }
 
             if proj_name.contains(char::is_whitespace) {
@@ -127,7 +128,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
             };
 
             data.push(my_project);
-            files.write(&data)?;
+            files.write(&data, &files.mw_path.clone())?;
 
             Ok(())
 
@@ -140,6 +141,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
 
             log.hey_mw(&format!("{}", "On Way!"));
             log.hey("");
+            log.hey(&format!("{}", ">-----------------------------".dimmed()));
 
             let mut target_uuid = None;
 
@@ -229,7 +231,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
                         *proj = my_project;
                     }
     
-                    files.write(data)?;
+                    files.write(&data, &files.mw_path.clone())?;
 
                     Ok(())
 
@@ -463,27 +465,31 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
 
                 if let Some(project) = data.iter().find(|p| p.uuid == *uuid) {
     
-                    let id_remove = project.uuid.clone();
-                    let name_to_log = project.name.clone();
-                    let mission_log = project.mission.clone();
-    
-    
-                    println!("");
-                    log.hey_mw("You will delete this:");
-                    log.hey_mw(&format!("\t#{} {}", id_remove.italic(), name_to_log.bold()));
-                        println!("\t\tMission: \"{}\"", view_mission(&mission_log).italic());
-    
-                    println!("");
+                    let uuid_removed = project.uuid.clone();
+        
+                    let is_finished = if project.is_finish {
+                        "F"
+                    } else {
+                        "W"
+                    };
+
+                    log.hey_mw(&format!("You will {} this:", "Giveup".red()));
+                    log.hey(&format!("{}", ">-----------------------------".dimmed()));
+                    log.hey("");
+                    log.hey_mw(&format!("({} : {}) {} {} {}", is_finished.bold().yellow(), project.status.yellow().bold(), project.uuid.italic(), project.name.bold(), format!("[{}]", project.versions.last().expect("")).italic()));
+                    log.hey_project(project, true);
+                    
+                    log.hey("");
     
                     let want_giveup = log.quest_option("Proceed? [Y/n]: ", vec!["Y", "n"], "n");
     
                     if want_giveup == "Y" {
     
-                        log.hey_mw(&format!("\"{}\" was removed!", name_to_log));
+                        log.hey_mw(&format!("{} was removed!", project.name.yellow()));
                         
-                        data.retain(|p| p.uuid != id_remove);
+                        data.retain(|p| p.uuid != uuid_removed);
     
-                        files.write(&data).expect("Not possible to save data");
+                        files.write(&data, &files.mw_path.clone())?;
 
                         Ok(())
     
@@ -509,6 +515,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
 
             log.hey_mw(&format!("{}", "On Way!"));
             log.hey("");
+            log.hey(&format!("{}", ">-----------------------------".dimmed()));
 
             let mut target_uuid = None;
 
@@ -528,11 +535,11 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
                     log.hey_mw(&format!("{}", "This action cannot be revoked!".dimmed().red()));
                     println!("");
 
-                    let want_finish = log.quest_option("Did you really finish the project? [Y/n]:", vec!["Y", "n"], "Y");
+                    let want_finish = log.quest_option("Did you really mark this project as \"Finish\"? [Y/n]:", vec!["Y", "n"], "Y");
 
                     if want_finish == "Y" {
 
-                        log.hey_mw(&format!("\"{}\" was marked as ({})!", proj.name, "F".bold().yellow()));
+                        log.hey_mw(&format!("{} was marked as ({})!", proj.name.yellow(), "F".bold().yellow()));
                         
                         let my_project: Project = Project {
                             uuid: proj.uuid.clone(),
@@ -552,7 +559,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
                             *proj = my_project;
                         }
 
-                        files.write(&data).expect("Not possible to save data");
+                        files.write(&data, &files.mw_path.clone())?;
 
                         Ok(())
 
@@ -577,7 +584,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
         Commands::Stacks => {
 
             log.hey_mw("Searching all Stacks...");
-            log.hey(">----------------------------------------------");
+            log.hey(&format!("{}", ">-----------------------------".dimmed()));
 
             let mut counts: HashMap<String, u32> = HashMap::new();
 
@@ -623,6 +630,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
 
             log.hey_mw(&format!("{}", "On Way!"));
             log.hey("");
+            log.hey(&format!("{}", ">-----------------------------".dimmed()));
 
             let mut target_uuid = None;
 
@@ -667,7 +675,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
                         log.hey_mw(&format!("{} -> {}", curr_ver, proj_version_new));
                         log.hey_mw(&format!("{} has a new version!", proj.name.bold()));
                         proj.versions.push(proj_version_new);
-                        let _ = files.write(&data);
+                        files.write(&data, &files.mw_path.clone())?;
 
                         return Ok(());
 
@@ -758,8 +766,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
                             data.retain(|p| p.uuid != &*proj.uuid);
                             graveyard.push(proj);
 
-                            files.write(&data)?;
-                            files.write_graveyard(&graveyard)?;
+                            files.write(&graveyard, &files.graveyard_path.clone())?;
 
                         } else {
                             log.hey_mw("Aborted. Project is still alive.");
@@ -805,7 +812,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
                     log.hey("");
                     log.hey_mw("Graveyard is Empty now!");
                     graveyard.clear();
-                    let _ = files.write_graveyard(&graveyard);
+                    files.write(&graveyard, &files.graveyard_path.clone())?;
 
 
                 } else {
@@ -825,6 +832,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
 
             log.hey_mw(&format!("{}", "On the other S1d3!".purple()));
             log.hey("");
+            log.hey(&format!("{}", ">-----------------------------".dimmed()));
 
             let mut target_uuid = None;
 
@@ -857,8 +865,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
                         graveyard.retain(|p| p.uuid != &*proj.uuid);
                         data.push(proj);
 
-                        files.write(&data)?;
-                        files.write_graveyard(&graveyard)?;
+                        files.write(&graveyard, &files.graveyard_path.clone())?;
 
                     } else {
                         log.hey_mw("Aborted. Project is still dead.");
@@ -884,6 +891,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
 
             log.hey_mw(&format!("{}", "On Way!"));
             log.hey("");
+            log.hey(&format!("{}", ">-----------------------------".dimmed()));
 
             let mut target_uuid = None;
 
@@ -927,7 +935,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
                             *proj = my_project;
                         }
 
-                        let _ = files.write(&data);
+                        files.write(&data, &files.mw_path.clone())?;
 
                         Ok(())
 
@@ -954,6 +962,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
 
             log.hey_mw(&format!("{}", "On Way!"));
             log.hey("");
+            log.hey(&format!("{}", ">-----------------------------".dimmed()));
 
             let mut target_uuid = None;
 
@@ -989,7 +998,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
 
                             log.hey_mw(&format!("{} and {} were swapped", proj_name.yellow(), other_project.name.yellow()));
                             data.swap(project_index, other_project_index);
-                            files.write(&data)?;
+                            files.write(&data, &files.mw_path.clone())?;
 
                         } else {
                             return Err(MyWayError::WayLengthExceeded(format!("{} is more than {}", other_project_index, data.len())))
@@ -1005,7 +1014,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
 
                                 let it = data.remove(project_index);
                                 data.insert(0, it);
-                                files.write(&data)?;
+                                files.write(&data, &files.mw_path.clone())?;
                             }
                             
                         }
@@ -1018,7 +1027,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
 
                                 let it = data.remove(project_index);
                                 data.insert(data.len(), it);
-                                files.write(&data)?;
+                                files.write(&data, &files.mw_path.clone())?;
                             }
 
                         }

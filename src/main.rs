@@ -21,11 +21,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli: Args = Args::parse(); // cli
 
     // read myway_projects.json and convert to Vec<Project>
-    let data = fileman.read()?;
-    let mut json_data = serde_json::from_str::<ProjectList>(&data)?;
-
-    let data_graveyard = fileman.read_graveyard()?;
-    let mut graveyard_json_data = serde_json::from_str::<GraveyardList>(&data_graveyard)?;
+    let mut data: ProjectList = fileman.read(&fileman.mw_path.clone())?;
+    let mut data_graveyard: GraveyardList = fileman.read(&fileman.graveyard_path.clone())?;
 
 
     // initiate the match to analize command delivered
@@ -33,8 +30,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         &cli.command, 
         log, 
         &mut fileman, 
-        &mut json_data, 
-        &mut graveyard_json_data
+        &mut data, 
+        &mut data_graveyard
     )?;
 
     Ok(())
