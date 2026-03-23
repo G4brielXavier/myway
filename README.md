@@ -64,8 +64,10 @@ mw yard --exject
 
 MyWay is **zero-cloud** and private by default. Your data is stored locally in:
 
-- Windows: `%USERPROFILE%\Documents\MyWayCli`
-- Linux/macOS: `~/Documents/MyWayCli`
+- Windows: `%APPDATA%\Local\myway`
+- Linux/macOS: `~/.local/share/myway`
+
+The files are `.tql` because the data is *encrypted* with `tequel-rs` (`TequelEncrypt`) 
 
 ## 🚀 Future Roadmap (v0.2.5)
 
