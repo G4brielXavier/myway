@@ -67,3 +67,11 @@
 - Improvements
   - UX Colors improved (`colored`)
   - `mw giveup` visual improved
+
+## myway-cli v0.3.1
+
+- Change Limits:
+  - Description: <=35
+  - Project's Name: <=20
+
+

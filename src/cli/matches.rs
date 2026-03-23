@@ -66,8 +66,8 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
 
             let proj_description: String = log.quest_mandatory("description", "It's my project");
 
-            if proj_description.len() > 24 {
-                return Err(MyWayError::StringLengthLimitExceeded("description: <=24 8limit length".to_string()))
+            if proj_description.len() > 35 {
+                return Err(MyWayError::StringLengthLimitExceeded("description: <=35 8limit length".to_string()))
             }
             
             log.hey("");
@@ -98,8 +98,8 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
             
             log.hey("");
             
-            let creating_msg = format!("Adding \"{}\" to your WAY... ", proj_name.yellow().bold());
-            let final_msg = format!("Now \"{}\" is on your WAY!", proj_name.yellow().bold());
+            let creating_msg = format!("Adding {} to your WAY... ", proj_name.yellow().bold());
+            let final_msg = format!("Now {} is on your WAY!", proj_name.yellow().bold());
             
             log.hey_mw(&creating_msg);
             thread::sleep(Duration::from_millis(500));
@@ -181,8 +181,8 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
     
                     let proj_description: String = log.quest_mandatory("description", &proj.description);
     
-                    if proj_description.len() > 24 {
-                        return Err(MyWayError::StringLengthLimitExceeded("description: <=24 8limit length".to_string()))
+                    if proj_description.len() > 35 {
+                        return Err(MyWayError::StringLengthLimitExceeded("description: <=35 limit length".to_string()))
                     }
 
                     log.hey("");
@@ -766,6 +766,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
                             data.retain(|p| p.uuid != &*proj.uuid);
                             graveyard.push(proj);
 
+                            files.write(&data, &files.mw_path.clone())?;
                             files.write(&graveyard, &files.graveyard_path.clone())?;
 
                         } else {
@@ -865,6 +866,7 @@ pub fn match_cli(command: &Commands, log: Log, files: &mut Fiman, data: &mut Pro
                         graveyard.retain(|p| p.uuid != &*proj.uuid);
                         data.push(proj);
 
+                        files.write(&data, &files.mw_path.clone())?;
                         files.write(&graveyard, &files.graveyard_path.clone())?;
 
                     } else {
